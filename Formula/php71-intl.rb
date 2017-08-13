@@ -20,7 +20,10 @@ class Php71Intl < AbstractPhp71Extension
 
   def install
     Dir.chdir "ext/intl"
-
+    ENV.cxx11
+    # These need to be set in CXXFLAGS, because icu4c requires C++11.
+    ENV.append "CXXFLAGS", "-std=c++11"
+    ENV.append "CXXFLAGS", "-stdlib=libc++" if ENV.compiler == :clang
     safe_phpize
     system "./configure", "--prefix=#{prefix}",
                           phpconfig,
